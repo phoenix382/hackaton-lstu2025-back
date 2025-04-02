@@ -18,5 +18,5 @@ func main() {
 	e.GET("/hello", handler.Hello)
 
 	// Start server
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(":4173"))
 }

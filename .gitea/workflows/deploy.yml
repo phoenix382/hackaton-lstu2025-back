@@ -12,7 +12,11 @@ jobs:
               git config --global --add safe.directory /back
           # Fetch repo
             docker exec gitea_runner \
-              git -C /back pull "https://phoenix381:${{ secrets.TOKEN }}@projects.root.sx/hackaton/back.git"
+              git -C /back fetch "https://phoenix381:${{ secrets.TOKEN }}@projects.root.sx/hackaton/back.git"
+          # Sync repo
+            docker exec gitea_runner \
+              git -C /back reset --hard origin/main
+              # git -C /back pull "https://phoenix381:${{ secrets.TOKEN }}@projects.root.sx/hackaton/back.git"
       
       - name: Restart back
         run: |

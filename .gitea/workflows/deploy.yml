@@ -1,0 +1,19 @@
+name: Deploy Container
+on: [push]  # Triggers on every git push
+
+jobs:
+  deploy back:
+    runs-on: ubuntu-latest 
+    steps:
+      - name: Sync repo
+        run: |
+          # set dir as safe
+            docker exec gitea_runner \
+              git config --global --add safe.directory /front
+          # Fetch repo
+            docker exec gitea_runner \
+              git -C /front pull "https://phoenix381:${{ secrets.TOKEN }}@projects.root.sx/hackaton/back.git"
+      
+      - name: Restart front
+        run: |
+          docker restart vue_app

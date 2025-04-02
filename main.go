@@ -44,7 +44,7 @@ func main() {
 	r.Get("/users", getUsers)
 	r.Post("/users", createUser)
 
-	log.Println("Starting server on :4173...")
+	log.Println("Starting server on port 4173...")
 	log.Fatal(http.ListenAndServe(":4173", r))
 }
 

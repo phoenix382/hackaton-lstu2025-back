@@ -30,12 +30,12 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Public routes
-	e.POST("/signup", handler.SignUp)
-	e.POST("/login", handler.Login)
+	e.POST("/api/signup", handler.SignUp)
+	e.POST("/api/login", handler.Login)
 
-	e.GET("/hello", handler.Hello)
-	e.GET("/add", handler.AddNumbers)      // GET с параметрами ?a=5&b=3
-	e.POST("/add", handler.AddNumbersJSON) // POST с JSON телом
+	e.GET("/api/hello", handler.Hello)
+	e.GET("/api/add", handler.AddNumbers)      // GET с параметрами ?a=5&b=3
+	e.POST("/api/add", handler.AddNumbersJSON) // POST с JSON телом
 
 	// Protected routes
 	api := e.Group("/api")

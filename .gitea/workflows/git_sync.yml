@@ -14,12 +14,12 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "Phoenix381"
-          git config user.email "phoenix381@bk.ru"
+          git config user.name "Phoenix382"
+          git config user.email "d.a.kashirin@bk.ru"
 
       - name: Add GitHub Remote
         run: |
-          git remote add github https://${{ secrets.TOKEN_GITHUB }}@github.com/Phoenix381/back_sync_test.git
+          git remote add github https://${{ secrets.TOKEN_GITHUB }}@github.com/phoenix382/hackaton-lstu2025-back.git
 
       - name: Push to GitHub
         run: |

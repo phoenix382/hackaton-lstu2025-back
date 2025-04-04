@@ -19,7 +19,7 @@ jobs:
               # git -C /back pull "https://phoenix381:${{ secrets.TOKEN }}@projects.root.sx/hackaton/back.git"
           # log
             docker exec gitea_runner \
-              git status
+              git -C /back status
       
       - name: Restart back
         run: |

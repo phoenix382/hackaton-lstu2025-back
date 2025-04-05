@@ -1,7 +1,6 @@
 package main
 
 import (
-	apifront "myapp/internal/apiFront"
 	changedata "myapp/internal/apiFront/change"
 	getdata "myapp/internal/apiFront/get"
 	"myapp/internal/db"
@@ -36,10 +35,10 @@ func main() {
 	e.POST("/api/register", handler.Register)
 	e.POST("/api/login", handler.Login)
 
+	// Test
+	e.POST("/api/add", handler.AddNumbersJSON) // POST с JSON телом
 	e.GET("/api/hello", handler.Hello)
 	e.GET("/api/add", handler.AddNumbers) // GET с параметрами ?a=5&b=3
-	e.POST("/api/ChangePlanMl", apifront.ChangePlanMl)
-	e.POST("/api/add", handler.AddNumbersJSON) // POST с JSON телом
 
 	// Protected routes
 	api := e.Group("/api")
@@ -47,7 +46,9 @@ func main() {
 	{
 		api.GET("/getId", handler.GetUserId)
 		api.GET("/getUserInfo", getdata.GetUserInfo)
+
 		api.POST("/changeUserInfo", changedata.ChangeUserInfo)
+		api.POST("/api/ChangePlanMl", changedata.ChangePlanMl)
 	}
 
 	// Start server

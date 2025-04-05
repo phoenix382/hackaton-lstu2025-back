@@ -22,19 +22,23 @@ type AuthRequest struct {
 	Password string `json:"password"`
 }
 
+type RegistrationRequest struct {
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Goal     string `json:"goal"`
+	Gender   string `json:"gender"`
+}
+
 // Регистрация
 func Register(c echo.Context) error {
-	var req AuthRequest
+	var req RegistrationRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request format"})
 	}
 
-	if !isValidEmail(req.Email) {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid email format"})
-	}
-
-	if !isValidPassword(req.Password) {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid password format"})
+	if errStr := isValidAuthRequest(req); errStr != "" {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": errStr})
 	}
 
 	// Хеширование пароля
@@ -45,8 +49,11 @@ func Register(c echo.Context) error {
 
 	// Создание пользователя через GORM
 	user := db.User{
+		Name:         req.Name,
 		Email:        req.Email,
 		PasswordHash: string(hashedPassword),
+		GoalExercise: req.Goal,
+		Gender:       req.Gender,
 	}
 
 	result := db.DB.Create(&user)
@@ -65,6 +72,42 @@ func Register(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": tokenString,
 	})
+}
+
+func isValidAuthRequest(req RegistrationRequest) string {
+	if !isValidEmail(req.Email) {
+		return "invalid email format"
+	}
+
+	if !isValidPassword(req.Password) {
+		return "invalid password format"
+	}
+
+	if !isValidName(req.Name) {
+		return "invalid name format"
+	}
+
+	if !isValidGoal(req.Goal) {
+		return "invalid goal format"
+	}
+
+	if !isValidGender(req.Gender) {
+		return "invalid gender format"
+	}
+
+	return ""
+}
+
+func isValidGoal(goal string) bool {
+	return goal != ""
+}
+
+func isValidGender(gender string) bool {
+	return gender != ""
+}
+
+func isValidName(name string) bool {
+	return name != ""
 }
 
 func isValidEmail(email string) bool {

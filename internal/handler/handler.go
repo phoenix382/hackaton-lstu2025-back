@@ -50,31 +50,3 @@ func GetUserId(c echo.Context) error {
 		"result": c.Get("userID").(int),
 	})
 }
-
-// handler.go
-func GetProjects(c echo.Context) error {
-	userID := c.Get("userID").(int) // Получаем ID пользователя из JWT middleware
-
-	// rows, err := db.DB.Query("SELECT id, name, score FROM projects WHERE user_id = $1", userID)
-	// if err != nil {
-	// 	return echo.NewHTTPError(http.StatusInternalServerError, "database error")
-	// }
-	// defer rows.Close()
-
-	// var projects []map[string]interface{}
-	// for rows.Next() {
-	// 	var id, score int
-	// 	var name string
-	// 	if err := rows.Scan(&id, &name, &score); err != nil {
-	// 		return err
-	// 	}
-	// 	projects = append(projects, map[string]interface{}{
-	// 		"id":    id,
-	// 		"name":  name,
-	// 		"score": score,
-	// 	})
-	// }
-
-	// return c.JSON(http.StatusOK, projects)
-	return c.JSON(http.StatusOK, userID)
-}

@@ -43,7 +43,6 @@ func main() {
 	api := e.Group("/api")
 	api.Use(handler.JWTMiddleware)
 	{
-		api.GET("/projects", handler.GetProjects)
 		api.GET("/getId", handler.GetUserId)
 		// api.POST("/projects", handler.CreateProject)
 	}

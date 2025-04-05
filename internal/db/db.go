@@ -2,7 +2,6 @@ package db
 
 import (
 	"fmt"
-	"log"
 	"os"
 
 	_ "github.com/lib/pq"
@@ -38,29 +37,11 @@ func Init() error {
 		return fmt.Errorf("database ping failed: %w", err)
 	}
 
-	DB.Migrator().DropTable(&User{}) // ПОТОМ УДАЛИТЬ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	DB.Migrator().DropTable(&User{}, &PlanWeek{}, &Day{}, &Diet{}, &Exercise{}) // ПОТОМ УДАЛИТЬ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	if err := DB.AutoMigrate(&User{}); err != nil {
+	if err := DB.AutoMigrate(&User{}, &PlanWeek{}, &Day{}, &Diet{}, &Exercise{}); err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)
-	}
-
-	if DB.Migrator().HasTable(&User{}) {
-		log.Println("Table exists!")
-	} else {
-		log.Println("Table creation failed!")
 	}
 
 	return nil
 }
-
-// func runMigrations() error {
-// 	// Реализация применения миграций (можно использовать библиотеку migrate)
-// 	// Для простоты выполним SQL из файла
-// 	sqlFile, err := os.ReadFile("./migrations/init.sql")
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	_, err = DB.Exec(string(sqlFile))
-// 	return err
-// }

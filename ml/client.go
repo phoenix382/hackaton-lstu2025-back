@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	serverURL    = "http://localhost:8000"
-	callbackPort = ":8001"
+	serverURL    = "https://back.root.sx/ml"
+	callbackPort = ""
 	timeout      = 30 * time.Second
 )
 
@@ -20,7 +20,8 @@ func MLWork(input map[string]interface{}) (map[string]interface{}, error) {
 	// Генерация уникального токена
 	token := generateToken()
 	responses := make(map[string]map[string]interface{})
-	callbackURL := "http://localhost" + callbackPort
+	// callbackURL := "http://localhost" + callbackPort
+	callbackURL := "https://back.root.sx/ml"
 
 	// Запуск сервера для приема ответа
 	go func() {

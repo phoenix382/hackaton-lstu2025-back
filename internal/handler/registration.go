@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -12,6 +12,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 
 	"myapp/internal/db"
 )
@@ -28,46 +29,35 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request format"})
 	}
 
-	// Валидация email и пароля
-	if req.Email == "" || req.Password == "" {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "email and password are required"})
-	}
-
-	// Проверка формата email
 	if !isValidEmail(req.Email) {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid email format"})
 	}
 
-	// Проверка сложности пароля
-	if len(req.Password) < 8 {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "password must be at least 8 characters long"})
+	if !isValidPassword(req.Password) {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid password format"})
 	}
 
 	// Хеширование пароля
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to process password"})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to process hashed password"})
 	}
 
-	// Сохранение в БД
-	var userID int
-	err = db.DB.QueryRow(
-		"INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id",
-		req.Email,
-		string(hashedPassword),
-	).Scan(&userID) // Сохраняем ID в переменную
+	// Создание пользователя через GORM
+	user := db.User{
+		Email:        req.Email,
+		PasswordHash: string(hashedPassword),
+	}
 
-	if err != nil {
-		// Проверяем является ли ошибка нарушением уникальности email
-		if strings.Contains(err.Error(), "users_email_key") || strings.Contains(err.Error(), "unique constraint") {
-			return c.JSON(http.StatusConflict, map[string]string{"error": "user with this email already exists"})
+	result := db.DB.Create(&user)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrDuplicatedKey) {
+			return c.JSON(http.StatusConflict, map[string]string{"error": "user already exists"})
 		}
-		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "registration failed"})
 	}
 
-	// Генерация JWT токена
-	tokenString, err := GenerateTokenJWT(userID)
+	tokenString, err := GenerateTokenJWT(int(user.ID))
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid credentials"})
 	}
@@ -77,33 +67,26 @@ func Register(c echo.Context) error {
 	})
 }
 
-// Вспомогательная функция для проверки email
 func isValidEmail(email string) bool {
-	// Простая проверка формата email, можно заменить на более сложную
-	return strings.Contains(email, "@") && strings.Contains(email, ".")
+	return strings.Contains(email, "@") && strings.Contains(email, ".") && len(email) > 4
 }
 
-// Вход
+func isValidPassword(password string) bool {
+	return len(password) > 8
+}
+
 func Login(c echo.Context) error {
 	var req AuthRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request"})
 	}
 
-	var user struct {
-		ID           int
-		PasswordHash string
-	}
-
-	err := db.DB.QueryRow(
-		"SELECT id, password_hash FROM users WHERE email = $1",
-		req.Email,
-	).Scan(&user.ID, &user.PasswordHash)
-
-	if err == sql.ErrNoRows {
-		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid credentials"})
-	}
-	if err != nil {
+	var user db.User
+	result := db.DB.Where("email = ?", req.Email).First(&user)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid credentials"})
+		}
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "database error"})
 	}
 
@@ -112,8 +95,7 @@ func Login(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid credentials"})
 	}
 
-	// Генерация JWT токена
-	tokenString, err := GenerateTokenJWT(user.ID)
+	tokenString, err := GenerateTokenJWT(int(user.ID))
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid credentials"})
 	}

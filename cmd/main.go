@@ -1,6 +1,7 @@
 package main
 
 import (
+	apifront "myapp/internal/apiFront"
 	"myapp/internal/db"
 	"myapp/internal/handler"
 
@@ -21,9 +22,9 @@ func main() {
 	if err := db.Init(); err != nil {
 		log.Fatalf("Database initialization failed: %v", err)
 	}
-	defer db.DB.Close()
 
 	e := echo.New()
+	e.Debug = true // Включаем режим отладки
 
 	// Middleware
 	e.Use(middleware.Logger())
@@ -34,7 +35,8 @@ func main() {
 	e.POST("/api/login", handler.Login)
 
 	e.GET("/api/hello", handler.Hello)
-	e.GET("/api/add", handler.AddNumbers)      // GET с параметрами ?a=5&b=3
+	e.GET("/api/add", handler.AddNumbers) // GET с параметрами ?a=5&b=3
+	e.POST("/api/ChangePlanMl", apifront.ChangePlanMl)
 	e.POST("/api/add", handler.AddNumbersJSON) // POST с JSON телом
 
 	// Protected routes
@@ -42,6 +44,7 @@ func main() {
 	api.Use(handler.JWTMiddleware)
 	{
 		api.GET("/projects", handler.GetProjects)
+		api.GET("/getId", handler.GetUserId)
 		// api.POST("/projects", handler.CreateProject)
 	}
 

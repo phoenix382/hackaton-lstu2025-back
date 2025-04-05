@@ -62,6 +62,7 @@ func Register(c echo.Context) error {
 		if strings.Contains(err.Error(), "users_email_key") || strings.Contains(err.Error(), "unique constraint") {
 			return c.JSON(http.StatusConflict, map[string]string{"error": "user with this email already exists"})
 		}
+		fmt.Println(err)
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "registration failed"})
 	}
 

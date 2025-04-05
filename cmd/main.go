@@ -30,7 +30,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	// Public routes
-	e.POST("/api/signup", handler.SignUp)
+	e.POST("/api/register", handler.Register)
 	e.POST("/api/login", handler.Login)
 
 	e.GET("/api/hello", handler.Hello)

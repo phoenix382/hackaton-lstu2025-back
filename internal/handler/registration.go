@@ -22,7 +22,7 @@ type AuthRequest struct {
 }
 
 // Регистрация
-func SignUp(c echo.Context) error {
+func Register(c echo.Context) error {
 	var req AuthRequest
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid request format"})

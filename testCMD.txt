@@ -1,0 +1,14 @@
+Invoke-WebRequest -Uri http://localhost:4173/api/register -Method POST `
+-ContentType "application/json" `
+-Body '{"email":"use123r@example.com", "password":"strongpassword",
+"name":"ИВАН",
+"gender":"КВ-2",
+"goal":"Пробить танк фугой"}'
+
+$response = Invoke-WebRequest -Uri http://localhost:4173/api/login -Method POST `
+-ContentType "application/json" `
+-Body '{"email":"use123r@example.com", "password":"strongpassword"}'
+$token = ($response.Content | ConvertFrom-Json).token
+
+Invoke-WebRequest -Uri http://localhost:4173/api/getId -Headers @{Authorization=$token}
+Invoke-WebRequest -Uri http://localhost:4173/api/getUserInfo -Headers @{Authorization=$token}

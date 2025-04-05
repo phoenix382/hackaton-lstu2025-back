@@ -52,7 +52,7 @@ func Register(c echo.Context) error {
 		Name:         req.Name,
 		Email:        req.Email,
 		PasswordHash: string(hashedPassword),
-		GoalExercise: req.Goal,
+		Goal:         req.Goal,
 		Gender:       req.Gender,
 	}
 

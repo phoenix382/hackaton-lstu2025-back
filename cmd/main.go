@@ -2,6 +2,8 @@ package main
 
 import (
 	apifront "myapp/internal/apiFront"
+	"myapp/internal/apiFront/changedata"
+	"myapp/internal/apiFront/getdata"
 	"myapp/internal/db"
 	"myapp/internal/handler"
 
@@ -44,7 +46,8 @@ func main() {
 	api.Use(handler.JWTMiddleware)
 	{
 		api.GET("/getId", handler.GetUserId)
-		// api.POST("/projects", handler.CreateProject)
+		api.GET("/getUserInfo", getdata.GetUserInfo)
+		api.POST("/changeUserInfo", changedata.ChangeUserInfo)
 	}
 
 	// Start server

@@ -2,8 +2,8 @@ package main
 
 import (
 	apifront "myapp/internal/apiFront"
-	"myapp/internal/apiFront/changedata"
-	"myapp/internal/apiFront/getdata"
+	changedata "myapp/internal/apiFront/change"
+	getdata "myapp/internal/apiFront/get"
 	"myapp/internal/db"
 	"myapp/internal/handler"
 

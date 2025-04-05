@@ -64,10 +64,7 @@ func SignUp(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "registration failed"})
 	}
 
-	return c.JSON(http.StatusCreated, map[string]interface{}{
-		"status":  "success",
-		"message": "user created successfully",
-	})
+	return Login(c)
 }
 
 // Вспомогательная функция для проверки email
@@ -106,19 +103,29 @@ func Login(c echo.Context) error {
 	}
 
 	// Генерация JWT токена
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": strconv.Itoa(user.ID),
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
-	})
-
-	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	tokenString, err := GenerateTokenJWT(user.ID)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "failed to generate token"})
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid credentials"})
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"token": tokenString,
 	})
+}
+
+func GenerateTokenJWT(userID int) (string, error) {
+	// Генерация JWT токена
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"sub": strconv.Itoa(userID),
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	if err != nil {
+		return "failed to generate token", err
+	}
+
+	return tokenString, nil
 }
 
 // Middleware для проверки JWT

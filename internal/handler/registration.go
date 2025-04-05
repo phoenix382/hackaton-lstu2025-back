@@ -50,11 +50,12 @@ func Register(c echo.Context) error {
 	}
 
 	// Сохранение в БД
-	_, err = db.DB.Exec(
-		"INSERT INTO users (email, password_hash) VALUES ($1, $2)",
+	var userID int
+	err = db.DB.QueryRow(
+		"INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id",
 		req.Email,
 		string(hashedPassword),
-	)
+	).Scan(&userID) // Сохраняем ID в переменную
 
 	if err != nil {
 		// Проверяем является ли ошибка нарушением уникальности email
@@ -64,7 +65,15 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "registration failed"})
 	}
 
-	return Login(c)
+	// Генерация JWT токена
+	tokenString, err := GenerateTokenJWT(userID)
+	if err != nil {
+		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid credentials"})
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"token": tokenString,
+	})
 }
 
 // Вспомогательная функция для проверки email

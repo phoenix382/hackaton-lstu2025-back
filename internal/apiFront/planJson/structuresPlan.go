@@ -9,23 +9,23 @@ type (
 	}
 
 	WorkoutData struct {
-		Type          string          `json:"тип тренировки"`
-		ExercisesList []ExerciseInput `json:"список упражнений"`
+		Type          string          `json:"тип_тренировки"`
+		ExercisesList []ExerciseInput `json:"упражнения"`
 	}
 
 	ExerciseInput struct {
 		Name      string `json:"название"`
-		Execution string `json:"информация о выполнении"`
+		Execution string `json:"информация_о_выполнении"`
 	}
 
 	NutritionData struct {
-		DailyCalories string      `json:"суточная калорийность. БЖУ"`
-		Meals         []MealInput `json:"приемы пищи"`
+		DailyCalories string      `json:"суточная_калорийность"`
+		Meals         []MealInput `json:"приемы_пищи"`
 	}
 
 	MealInput struct {
 		MealType string `json:"прием"`
 		Dish     string `json:"блюдо"`
-		Calories string `json:"калории и БЖУ"`
+		Calories string `json:"калории_и_БЖУ"`
 	}
 )

@@ -11,10 +11,14 @@ $response = Invoke-WebRequest -Uri http://localhost:4173/api/login -Method POST 
 $token = ($response.Content | ConvertFrom-Json).token
 
 
+Invoke-WebRequest -Uri http://localhost:4173/api/createPlan -Headers @{Authorization=$token}
+
+
 Invoke-WebRequest -Uri http://localhost:4173/api/ChangePlanMl POST `
 -Headers @{Authorization=$token} `
 -ContentType "application/json" `
 -Body '{"planID":213}'
+
 
 
 ЭТО ДЛЯ GET, СЕЙЧАС ТАМ POST

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"myapp/internal/db"
 	"net/http"
 	"time"
@@ -15,7 +16,7 @@ const (
 )
 
 // MLWork отправляет данные на ML сервер и возвращает результат
-func MLWork(input db.User) (map[string]interface{}, error) {
+func MLWork(input db.User) (string, error) {
 	// Подготовка запроса
 	request := map[string]interface{}{
 		"пол":     input.Gender,
@@ -27,7 +28,7 @@ func MLWork(input db.User) (map[string]interface{}, error) {
 
 	jsonData, err := json.Marshal(request)
 	if err != nil {
-		return nil, fmt.Errorf("ошибка кодирования данных: %v", err)
+		return "", fmt.Errorf("ошибка кодирования данных: %v", err)
 	}
 
 	// Создаем HTTP клиент с таймаутом
@@ -38,23 +39,25 @@ func MLWork(input db.User) (map[string]interface{}, error) {
 	// Отправляем POST запрос
 	resp, err := client.Post(serverURL1, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return nil, fmt.Errorf("ошибка отправки запроса: %v", err)
+		return "", fmt.Errorf("ошибка отправки запроса: %v", err)
 	}
 	defer resp.Body.Close()
 
 	// Проверяем статус ответа
 	if resp.StatusCode != http.StatusOK {
-		fmt.Println(resp.StatusCode)
-		return nil, fmt.Errorf("сервер вернул ошибку: %s", resp.Status)
+		return "", fmt.Errorf("сервер вернул ошибку: %s", resp.Status)
 	}
 
-	// Декодируем JSON ответ
-	var result map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		fmt.Println(result)
-		fmt.Println(err)
-		return nil, fmt.Errorf("ошибка декодирования ответа: %v", err)
+	// Читаем тело ответа
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("ошибка чтения тела ответа: %v", err)
 	}
 
-	return result, nil
+	// Закрываем тело ответа
+	defer resp.Body.Close()
+	ans := string(body)
+
+	// Конвертируем в строку и возвращаем
+	return ans[1 : len(ans)-1], nil
 }

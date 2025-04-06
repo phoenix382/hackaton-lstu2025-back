@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ImportPlan(dbConn *gorm.DB, planWeekID uint, jsonData []byte) error {
+func ChangePlan(dbConn *gorm.DB, planWeekID uint, jsonData []byte) error {
 	var schedule WeekSchedule
 	if err := json.Unmarshal(jsonData, &schedule); err != nil {
 		return fmt.Errorf("ошибка парсинга JSON: %v", err)

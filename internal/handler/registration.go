@@ -64,6 +64,7 @@ func Register(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "registration failed"})
 	}
 
+	fmt.Println(user.ID)
 	tokenString, err := GenerateTokenJWT(int(user.ID))
 	if err != nil {
 		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "invalid credentials"})

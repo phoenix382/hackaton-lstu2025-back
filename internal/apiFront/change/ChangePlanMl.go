@@ -309,7 +309,7 @@ func ChangePlanMl(c echo.Context) error {
 
 	jsonResult := input
 
-	planprocessing.ImportPlan(db.DB, planID, []byte(jsonResult))
+	planprocessing.ChangePlan(db.DB, planID, []byte(jsonResult))
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"plan": string(jsonResult),

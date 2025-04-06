@@ -45,7 +45,7 @@ func Init() error {
 		return fmt.Errorf("failed to migrate database: %w", err)
 	}
 
-	user, err := AddUser("1", "1@1.1", "123123123", "1", "1")
+	user, err := AddUser("111", "1@1.1", "123123123", "1", "1")
 	if err != nil {
 		// Обработка ошибки
 		log.Printf("Failed to add user: %v", err)

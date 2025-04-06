@@ -17,6 +17,7 @@ Invoke-WebRequest -Uri http://localhost:4173/api/ChangePlanMl POST `
 -Body '{"planID":213}'
 
 
+ЭТО ДЛЯ GET, СЕЙЧАС ТАМ POST
 Invoke-WebRequest -Uri http://localhost:4173/api/getId -Headers @{Authorization=$token}
 Invoke-WebRequest -Uri http://localhost:4173/api/getUserInfo -Headers @{Authorization=$token}
 Invoke-WebRequest -Uri http://localhost:4173/api/getCurrentPlan -Headers @{Authorization=$token}

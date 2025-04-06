@@ -44,12 +44,15 @@ func MLWork(input db.User) (map[string]interface{}, error) {
 
 	// Проверяем статус ответа
 	if resp.StatusCode != http.StatusOK {
+		fmt.Println(resp.StatusCode)
 		return nil, fmt.Errorf("сервер вернул ошибку: %s", resp.Status)
 	}
 
 	// Декодируем JSON ответ
 	var result map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		fmt.Println(result)
+		fmt.Println(err)
 		return nil, fmt.Errorf("ошибка декодирования ответа: %v", err)
 	}
 

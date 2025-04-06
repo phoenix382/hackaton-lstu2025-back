@@ -1,14 +1,26 @@
 package createplan
 
 import (
-	planprocessing "myapp/internal/apiFront/planJson"
+	// planprocessing "myapp/internal/apiFront/planJson"
 	"myapp/internal/db"
+	"myapp/ml"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 )
 
 func CreatePlan(c echo.Context) error {
 	userID := c.Get("userID").(int)
+	var user db.User
+	if err := db.DB.First(&user, userID).Error; err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "database error" + err.Error()})
+	}
+
+	result, err := ml.MLWork(user)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "error ML SLOMALAS"})
+	}
+
 	// передача в ML user, получение json и сохранение его.
 
 	// var input string = `{
@@ -292,4 +304,5 @@ func CreatePlan(c echo.Context) error {
 	// 	}
 	// }`
 	// planprocessing.SaveNewPlan(db.DB, userID, []byte(input))
+	return c.JSON(http.StatusOK, result)
 }

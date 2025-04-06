@@ -2,6 +2,7 @@ package main
 
 import (
 	changedata "myapp/internal/apiFront/change"
+	createplan "myapp/internal/apiFront/create"
 	getdata "myapp/internal/apiFront/get"
 	"myapp/internal/db"
 	"myapp/internal/handler"
@@ -45,6 +46,7 @@ func main() {
 	api.Use(handler.JWTMiddleware)
 	{
 		api.GET("/getId", handler.GetUserId)
+		api.GET("/createPlan", createplan.CreatePlan)
 
 		api.POST("/getUserInfo", getdata.GetUserInfo)
 		api.POST("/getPlans", getdata.GetPlans)

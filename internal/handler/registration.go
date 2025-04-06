@@ -72,6 +72,7 @@ func Register(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"userID": fmt.Sprintf("%d", user.ID),
+		"username": user.Name,
 		"token": tokenString,
 	})
 }
@@ -147,6 +148,7 @@ func Login(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, map[string]string{
 		"userID": fmt.Sprintf("%d", user.ID),
+		"username": user.Name,
 		"token": tokenString,
 	})
 }

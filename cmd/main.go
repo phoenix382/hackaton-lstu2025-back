@@ -46,10 +46,10 @@ func main() {
 	{
 		api.GET("/getId", handler.GetUserId)
 
-		api.GET("/getUserInfo", getdata.GetUserInfo)
-		api.GET("/getPlans", getdata.GetPlans)
-		api.GET("/getCurrentPlan", getdata.GetCurrentPlan)
-		api.GET("/getCurrentPlanJson", getdata.GetCurrentPlanJson)
+		api.POST("/getUserInfo", getdata.GetUserInfo)
+		api.POST("/getPlans", getdata.GetPlans)
+		api.POST("/getCurrentPlan", getdata.GetCurrentPlan)
+		api.POST("/getCurrentPlanJson", getdata.GetCurrentPlanJson)
 		api.POST("/getPlanJson", getdata.GetPlanJson)
 
 		api.POST("/changeUserInfo", changedata.ChangeUserInfo)

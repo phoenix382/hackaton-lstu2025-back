@@ -1,4 +1,4 @@
-package insertPlan
+package planprocessing
 
 import (
 	"myapp/internal/db"
@@ -26,8 +26,8 @@ func processDay(dbConn *gorm.DB, planID, dayNumber uint, data DayData) (*db.Day,
 	if day.ID == 0 { // Новый день
 		day.PlanID = planID
 		day.DayWeek = dayNumber
-		day.GoalExercise = data.Workouts.Type
-		day.CaloriesAll = data.Nutrition.DailyCalories
+		day.Goal = data.Workouts.Type
+		day.Calories = data.Nutrition.DailyCalories
 		err = dbConn.Create(day).Error
 	} else { // Обновление существующего
 		err = dbConn.Model(day).Updates(updates).Error

@@ -45,10 +45,15 @@ func main() {
 	api.Use(handler.JWTMiddleware)
 	{
 		api.GET("/getId", handler.GetUserId)
+
 		api.GET("/getUserInfo", getdata.GetUserInfo)
+		api.GET("/getPlans", getdata.GetPlans)
+		api.GET("/getCurrentPlan", getdata.GetCurrentPlan)
+		api.GET("/getCurrentPlanJson", getdata.GetCurrentPlanJson)
+		api.POST("/getPlanJson", getdata.GetPlanJson)
 
 		api.POST("/changeUserInfo", changedata.ChangeUserInfo)
-		api.POST("/api/ChangePlanMl", changedata.ChangePlanMl)
+		api.POST("/ChangePlanMl", changedata.ChangePlanMl)
 	}
 
 	// Start server

@@ -1,4 +1,4 @@
-package insertPlan
+package planprocessing
 
 type (
 	WeekSchedule map[string]DayData

@@ -1,4 +1,4 @@
-package insertPlan
+package planprocessing
 
 import (
 	"myapp/internal/db"

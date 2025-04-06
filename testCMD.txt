@@ -10,5 +10,14 @@ $response = Invoke-WebRequest -Uri http://localhost:4173/api/login -Method POST 
 -Body '{"email":"use123r@example.com", "password":"strongpassword"}'
 $token = ($response.Content | ConvertFrom-Json).token
 
+
+Invoke-WebRequest -Uri http://localhost:4173/api/ChangePlanMl POST `
+-Headers @{Authorization=$token} `
+-ContentType "application/json" `
+-Body '{"planID":213}'
+
+
 Invoke-WebRequest -Uri http://localhost:4173/api/getId -Headers @{Authorization=$token}
 Invoke-WebRequest -Uri http://localhost:4173/api/getUserInfo -Headers @{Authorization=$token}
+Invoke-WebRequest -Uri http://localhost:4173/api/getCurrentPlan -Headers @{Authorization=$token}
+Invoke-WebRequest -Uri http://localhost:4173/api/getCurrentPlanJson -Headers @{Authorization=$token}

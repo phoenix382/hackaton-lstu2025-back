@@ -1,4 +1,4 @@
-package insertPlan
+package planprocessing
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ImportPlan(db *gorm.DB, planWeekID uint, jsonData []byte) error {
+func ImportPlan(dbConn *gorm.DB, planWeekID uint, jsonData []byte) error {
 	var schedule WeekSchedule
 	if err := json.Unmarshal(jsonData, &schedule); err != nil {
 		return fmt.Errorf("ошибка парсинга JSON: %v", err)
@@ -26,18 +26,18 @@ func ImportPlan(db *gorm.DB, planWeekID uint, jsonData []byte) error {
 		}
 
 		// Обработка дня
-		day, err := processDay(db, planWeekID, dayNumber, data)
+		day, err := processDay(dbConn, planWeekID, dayNumber, data)
 		if err != nil {
 			return err
 		}
 
 		// Обработка упражнений
-		if err := processExercises(db, day.ID, data.Workouts); err != nil {
+		if err := processExercises(dbConn, day.ID, data.Workouts); err != nil {
 			return err
 		}
 
 		// Обработка питания
-		if err := processDiet(db, day.ID, data.Nutrition); err != nil {
+		if err := processDiet(dbConn, day.ID, data.Nutrition); err != nil {
 			return err
 		}
 	}

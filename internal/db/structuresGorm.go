@@ -14,6 +14,7 @@ type User struct {
 	Height       *uint  `gorm:"type:NUMERIC"` // Указатель для optional значений
 	Weight       *uint  `gorm:"type:NUMERIC"`
 	Goal         string `gorm:"type:text;default:''"`
+	Filled       string `gorm:"type:varchar(1);default:'0'"`
 }
 
 type PlanWeek struct {

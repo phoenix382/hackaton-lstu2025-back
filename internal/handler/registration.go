@@ -70,6 +70,7 @@ func Register(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
+		"userID": fmt.Sprintf("%d", user.ID),
 		"token": tokenString,
 	})
 }

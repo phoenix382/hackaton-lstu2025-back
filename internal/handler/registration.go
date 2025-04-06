@@ -144,6 +144,7 @@ func Login(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{
+		"userID": user.ID,
 		"token": tokenString,
 	})
 }
